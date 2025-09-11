@@ -1,328 +1,70 @@
-// script.js - navigation + jeux (sans onclick inline)
-// --------------------------------------------------
-// Variables globales pour contrôler intervalles / états
-let snakeInterval = null;
-let pongInterval = null;
-let snakeState = null;
-let pongState = null;
-
-// Wait DOM ready
-document.addEventListener("DOMContentLoaded", () => {
-  setupMenu();
-  setupMorpion();
-  setupClicker();
-  // show lobby by default (already active in HTML)
+// js/games.js
+d.addEventListener('click',()=>onClick(i));
+grid.appendChild(d);
 });
-
-// ---------------- Menu / navigation ----------------
-function setupMenu() {
-  const menu = document.getElementById("menu");
-  menu.querySelectorAll("button").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const gameId = btn.dataset.game;
-      showGame(gameId);
-      // active styling
-      menu.querySelectorAll("button").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-    });
-  });
-  // set initial active
-  menu.querySelector('button[data-game="lobby"]').classList.add("active");
+score.textContent = `Coups: ${moves}`;
 }
 
-function showGame(id) {
-  // hide all games
-  document.querySelectorAll(".game").forEach(s => {
-    s.classList.remove("active");
-    s.setAttribute("aria-hidden", "true");
-  });
-  // stop background intervals for games not active
-  stopSnake();
-  stopPong();
 
-  // show selected
-  const sel = document.getElementById(id);
-  if (!sel) return;
-  sel.classList.add("active");
-  sel.setAttribute("aria-hidden", "false");
-
-  // start if necessary
-  if (id === "snake") startSnake();
-  if (id === "pong") startPong();
+function onClick(i){
+if(revealed.includes(i) || matched[i]) return;
+revealed.push(i); render();
+if(revealed.length===2){
+moves++;
+const [a,b] = revealed;
+if(deck[a]===deck[b]){ matched[a]=matched[b]=true; revealed=[]; }
+else setTimeout(()=>{ revealed=[]; render(); },600);
+checkEnd();
+}
+}
+function checkEnd(){ if(matched.every(Boolean)) score.textContent += ' — Terminé !'; }
+container.querySelector('#reset-mem').addEventListener('click',()=>{deck = [...symbols, ...symbols].sort(()=>Math.random()-0.5); matched = Array(deck.length).fill(false); revealed=[]; moves=0; render();});
+render();
 }
 
-// ---------------- SNAKE ----------------
-function startSnake() {
-  // clear previous if any
-  stopSnake();
 
-  const canvas = document.getElementById("snakeCanvas");
-  const ctx = canvas.getContext("2d");
-  const box = 20;
-  const cols = canvas.width / box;
-  const rows = canvas.height / box;
+/* ---------------------- Whack-a-Mole ---------------------- */
+function loadWhack(){
+const container = document.createElement('div'); container.className='card whack';
+container.innerHTML = `
+<div class="controls"><strong>Whack‑a‑Mole</strong><button id="start-whack">Start</button><button id="stop-whack">Stop</button><span id="whack-score" style="margin-left:auto;color:var(--muted)">Score: 0</span></div>
+<div class="grid" id="whack-grid"></div>
+`;
+gameArea.appendChild(container);
 
-  let snake = [{ x: Math.floor(cols/2)*box, y: Math.floor(rows/2)*box }];
-  let dir = { x: 1, y: 0 };
-  let food = spawnFood();
 
-  // Key handling (use addEventListener and keep a ref so we can remove)
-  function keyHandler(e) {
-    if (e.key === "ArrowLeft" && dir.x !== 1) { dir = {x:-1,y:0}; }
-    if (e.key === "ArrowRight" && dir.x !== -1) { dir = {x:1,y:0}; }
-    if (e.key === "ArrowUp" && dir.y !== 1) { dir = {x:0,y:-1}; }
-    if (e.key === "ArrowDown" && dir.y !== -1) { dir = {x:0,y:1}; }
-  }
-  document.addEventListener("keydown", keyHandler);
-  snakeState = { keyHandler };
+const grid = container.querySelector('#whack-grid');
+const scoreEl = container.querySelector('#whack-score');
+let score=0; let timer=null; let active=-1;
 
-  function spawnFood() {
-    // ensure not on snake
-    while (true) {
-      const f = { x: Math.floor(Math.random()*cols)*box, y: Math.floor(Math.random()*rows)*box };
-      if (!snake.some(s => s.x === f.x && s.y === f.y)) return f;
-    }
-  }
 
-  function draw() {
-    // background
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-
-    // food
-    ctx.fillStyle = "crimson";
-    ctx.fillRect(food.x, food.y, box, box);
-
-    // snake
-    snake.forEach((s,i) => {
-      ctx.fillStyle = i===0 ? "#4ade80" : "#e5e7eb";
-      ctx.fillRect(s.x,s.y,box,box);
-    });
-
-    // move
-    const head = { x: snake[0].x + dir.x*box, y: snake[0].y + dir.y*box };
-
-    // collision with walls
-    if (head.x < 0 || head.y < 0 || head.x >= canvas.width || head.y >= canvas.height || snake.some(c => c.x===head.x && c.y===head.y)) {
-      // game over
-      stopSnake();
-      alert("Snake - Game Over !");
-      return;
-    }
-
-    snake.unshift(head);
-    if (head.x === food.x && head.y === food.y) {
-      food = spawnFood();
-    } else {
-      snake.pop();
-    }
-  }
-
-  // start interval
-  snakeInterval = setInterval(draw, 100);
-  // restart button
-  document.getElementById("restartSnake").onclick = () => {
-    stopSnake();
-    startSnake();
-  };
+// build 6 holes
+for(let i=0;i<6;i++){ const h=document.createElement('div'); h.className='hole'; h.dataset.i=i; grid.appendChild(h); }
+function spawn(){
+const holes = [...grid.children];
+if(active>=0) holes[active].innerHTML='';
+active = Math.floor(Math.random()*holes.length);
+holes[active].innerHTML = '<div class="mole" data-i="'+active+'"></div>';
+[...holes].forEach(h=>h.onclick = e=>{ if(e.target.classList.contains('mole')){ score++; scoreEl.textContent = `Score: ${score}`; e.target.remove(); } });
 }
-function stopSnake() {
-  if (snakeInterval) { clearInterval(snakeInterval); snakeInterval = null; }
-  if (snakeState && snakeState.keyHandler) {
-    document.removeEventListener("keydown", snakeState.keyHandler);
-  }
-  snakeState = null;
+container.querySelector('#start-whack').addEventListener('click',()=>{ if(timer) return; score=0; scoreEl.textContent='Score: 0'; spawn(); timer = setInterval(spawn,800); });
+container.querySelector('#stop-whack').addEventListener('click',()=>{ clearInterval(timer); timer=null; const holes=[...grid.children]; holes.forEach(h=>h.innerHTML=''); active=-1; });
 }
 
-// ---------------- MORPION ----------------
-function setupMorpion() {
-  const boardEl = document.getElementById("morpionBoard");
-  boardEl.innerHTML = ""; // clear
-  for (let i=0;i<9;i++) {
-    const cell = document.createElement("div");
-    cell.className = "cell";
-    cell.dataset.index = i;
-    boardEl.appendChild(cell);
-  }
 
-  // game state
-  resetMorpion();
-  // add listeners
-  boardEl.addEventListener("click", (e) => {
-    const cell = e.target.closest(".cell");
-    if(!cell) return;
-    const idx = Number(cell.dataset.index);
-    handleMorpionPlay(idx);
-  });
-
-  document.getElementById("restartMorpion").addEventListener("click", resetMorpion);
+/* ---------------------- Clicker ---------------------- */
+function loadClicker(){
+const container = document.createElement('div'); container.className='card clicker';
+container.innerHTML = `
+<div class="controls"><strong>Clicker</strong><button id="reset-click">Reset</button><span id="click-score" style="margin-left:auto;color:var(--muted)">0</span></div>
+<div style="display:flex;justify-content:center;padding:20px"><button class="big-btn" id="big-click">Clique moi</button></div>
+`;
+gameArea.appendChild(container);
+let score=0; const scoreEl = container.querySelector('#click-score');
+container.querySelector('#big-click').addEventListener('click',()=>{ score++; scoreEl.textContent = score; });
+container.querySelector('#reset-click').addEventListener('click',()=>{ score=0; scoreEl.textContent=0; });
 }
 
-let morpionBoard = [];
-let morpionTurn = "X";
-function resetMorpion() {
-  morpionBoard = Array(9).fill("");
-  morpionTurn = "X";
-  document.getElementById("morpionMsg").textContent = "Tour de X";
-  document.querySelectorAll("#morpionBoard .cell").forEach(c => c.textContent = "");
-}
-function handleMorpionPlay(i) {
-  if (morpionBoard[i] !== "") return;
-  morpionBoard[i] = morpionTurn;
-  const cell = document.querySelector(`#morpionBoard .cell[data-index="${i}"]`);
-  cell.textContent = morpionTurn;
-  if (checkMorpionWin()) {
-    document.getElementById("morpionMsg").textContent = `${morpionTurn} a gagné !`;
-    // disable further clicks by clearing board state (simple)
-    morpionBoard = morpionBoard.map(() => "*");
-    return;
-  }
-  if (!morpionBoard.includes("")) {
-    document.getElementById("morpionMsg").textContent = "Égalité !";
-    return;
-  }
-  morpionTurn = morpionTurn === "X" ? "O" : "X";
-  document.getElementById("morpionMsg").textContent = `Tour de ${morpionTurn}`;
-}
-function checkMorpionWin() {
-  const wins = [
-    [0,1,2],[3,4,5],[6,7,8],
-    [0,3,6],[1,4,7],[2,5,8],
-    [0,4,8],[2,4,6]
-  ];
-  return wins.some(([a,b,c]) => morpionBoard[a] && morpionBoard[a] === morpionBoard[b] && morpionBoard[b] === morpionBoard[c]);
-}
 
-// ---------------- PONG ----------------
-function startPong() {
-  stopPong();
-
-  const canvas = document.getElementById("pongCanvas");
-  const ctx = canvas.getContext("2d");
-  const paddleW = 10, paddleH = 80;
-  const speed = 4;
-
-  const state = {
-    leftY: canvas.height/2 - paddleH/2,
-    rightY: canvas.height/2 - paddleH/2,
-    ballX: canvas.width/2,
-    ballY: canvas.height/2,
-    ballDX: 3,
-    ballDY: 2,
-    leftScore: 0,
-    rightScore: 0
-  };
-  pongState = state;
-
-  // mouse control left paddle
-  function mouseMove(e) {
-    const rect = canvas.getBoundingClientRect();
-    state.leftY = e.clientY - rect.top - paddleH/2;
-    if (state.leftY < 0) state.leftY = 0;
-    if (state.leftY > canvas.height - paddleH) state.leftY = canvas.height - paddleH;
-  }
-  canvas.addEventListener("mousemove", mouseMove);
-  state.mouseMove = mouseMove;
-
-  function draw() {
-    // background
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-
-    // paddles
-    ctx.fillStyle = "#fff";
-    ctx.fillRect(0, state.leftY, paddleW, paddleH);
-    ctx.fillRect(canvas.width - paddleW, state.rightY, paddleW, paddleH);
-
-    // ball
-    ctx.beginPath();
-    ctx.arc(state.ballX, state.ballY, 8, 0, Math.PI*2);
-    ctx.fill();
-
-    // move ball
-    state.ballX += state.ballDX;
-    state.ballY += state.ballDY;
-
-    if (state.ballY < 0 || state.ballY > canvas.height) state.ballDY = -state.ballDY;
-
-    // left paddle collision
-    if (state.ballX - 8 < paddleW && state.ballY > state.leftY && state.ballY < state.leftY + paddleH) {
-      state.ballDX = Math.abs(state.ballDX);
-    }
-    // right paddle collision
-    if (state.ballX + 8 > canvas.width - paddleW && state.ballY > state.rightY && state.ballY < state.rightY + paddleH) {
-      state.ballDX = -Math.abs(state.ballDX);
-    }
-
-    // simple AI for right paddle
-    state.rightY += (state.ballY - (state.rightY + paddleH/2)) * 0.08;
-
-    // score
-    if (state.ballX < 0) {
-      state.rightScore++;
-      resetBall();
-    } else if (state.ballX > canvas.width) {
-      state.leftScore++;
-      resetBall();
-    }
-  }
-
-  function resetBall() {
-    state.ballX = canvas.width/2;
-    state.ballY = canvas.height/2;
-    state.ballDX = (Math.random() > 0.5) ? 3 : -3;
-    state.ballDY = (Math.random() > 0.5) ? 2 : -2;
-  }
-
-  pongInterval = setInterval(draw, 16);
-
-  document.getElementById("restartPong").onclick = () => {
-    stopPong();
-    startPong();
-  };
-}
-function stopPong() {
-  if (pongInterval) { clearInterval(pongInterval); pongInterval = null; }
-  // remove mouse listener if present
-  const canvas = document.getElementById("pongCanvas");
-  if (pongState && pongState.mouseMove) {
-    canvas.removeEventListener("mousemove", pongState.mouseMove);
-  }
-  pongState = null;
-}
-
-// ---------------- CLICKER ----------------
-function setupClicker() {
-  const startBtn = document.getElementById("startClicker");
-  const targetBtn = document.getElementById("clickTarget");
-  const scoreEl = document.getElementById("clickerScore");
-
-  let clicks = 0;
-  let running = false;
-  let timerId = null;
-
-  startBtn.addEventListener("click", () => {
-    if (running) return;
-    clicks = 0;
-    running = true;
-    scoreEl.textContent = "Prêt... GO !";
-    targetBtn.disabled = false;
-    targetBtn.focus();
-
-    targetBtn.onclick = () => { if (running) clicks++; };
-
-    timerId = setTimeout(() => {
-      running = false;
-      targetBtn.disabled = true;
-      targetBtn.onclick = null;
-      scoreEl.textContent = `Score : ${clicks} clics en 5s`;
-    }, 5000);
-  });
-}
-
-// --------------------------------------------------
-// Safety: stop intervals when leaving page
-window.addEventListener("beforeunload", () => {
-  stopSnake();
-  stopPong();
-});
+// charge un jeu par défaut
+loadGame('tictactoe');
