@@ -1,0 +1,47 @@
+body {
+  margin: 0;
+  background: #111;
+  color: white;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  margin: 20px;
+}
+
+nav {
+  margin: 20px;
+}
+nav button {
+  margin: 5px;
+  padding: 10px 20px;
+  font-size: 1.2em;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #444;
+  color: white;
+}
+nav button:hover {
+  background: #666;
+}
+
+.game {
+  display: none;
+  margin: auto;
+  margin-top: 20px;
+}
+
+#morpion table {
+  margin: auto;
+  border-collapse: collapse;
+}
+#morpion td {
+  width: 80px;
+  height: 80px;
+  border: 2px solid white;
+  font-size: 2em;
+  text-align: center;
+  cursor: pointer;
+}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini Arcade</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>🎮 Mini Arcade 🎮</h1>
+  <nav>
+    <button onclick="showGame('snake')">Snake</button>
+    <button onclick="showGame('morpion')">Morpion</button>
+    <button onclick="showGame('pong')">Pong</button>
+    <button onclick="showGame('clicker')">Clic Rapide</button>
+  </nav>
+
+  <div id="games">
+    <canvas id="snake" class="game" width="400" height="400"></canvas>
+    <div id="morpion" class="game">
+      <table>
+        <tr><td onclick="play(0)"></td><td onclick="play(1)"></td><td onclick="play(2)"></td></tr>
+        <tr><td onclick="play(3)"></td><td onclick="play(4)"></td><td onclick="play(5)"></td></tr>
+        <tr><td onclick="play(6)"></td><td onclick="play(7)"></td><td onclick="play(8)"></td></tr>
+      </table>
+      <p id="morpionMsg"></p>
+    </div>
+    <canvas id="pong" class="game" width="500" height="300"></canvas>
+    <div id="clicker" class="game">
+      <h2>Clique le plus vite possible en 5 secondes !</h2>
+      <button onclick="startClicker()">Démarrer</button>
+      <p id="clickerScore"></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
