@@ -1,36 +1,66 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>Mini Arcade</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mini Arcade - Stable</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>🎮 Mini Arcade 🎮</h1>
-  <nav>
-    <button onclick="showGame('snake')">Snake</button>
-    <button onclick="showGame('morpion')">Morpion</button>
-    <button onclick="showGame('pong')">Pong</button>
-    <button onclick="showGame('clicker')">Clic Rapide</button>
-  </nav>
+  <header>
+    <h1>Mini Arcade</h1>
+    <nav id="menu">
+      <button data-game="lobby">Accueil</button>
+      <button data-game="snake">Snake</button>
+      <button data-game="morpion">Morpion</button>
+      <button data-game="pong">Pong</button>
+      <button data-game="clicker">Clic Rapide</button>
+    </nav>
+  </header>
 
-  <div id="games">
-    <canvas id="snake" class="game" width="400" height="400"></canvas>
-    <div id="morpion" class="game">
-      <table>
-        <tr><td onclick="play(0)"></td><td onclick="play(1)"></td><td onclick="play(2)"></td></tr>
-        <tr><td onclick="play(3)"></td><td onclick="play(4)"></td><td onclick="play(5)"></td></tr>
-        <tr><td onclick="play(6)"></td><td onclick="play(7)"></td><td onclick="play(8)"></td></tr>
-      </table>
+  <main id="container">
+    <section id="lobby" class="game active">
+      <h2>Bienvenue dans la mini-arcade</h2>
+      <p>Choisis un jeu dans le menu.</p>
+    </section>
+
+    <section id="snake" class="game" aria-hidden="true">
+      <h2>Snake</h2>
+      <canvas id="snakeCanvas" width="400" height="400"></canvas>
+      <div class="controls">
+        <button id="restartSnake">Redémarrer Snake</button>
+      </div>
+    </section>
+
+    <section id="morpion" class="game" aria-hidden="true">
+      <h2>Morpion (Tic-Tac-Toe)</h2>
+      <div id="morpionBoard" class="board">
+        <!-- 9 cellules générées via JS -->
+      </div>
       <p id="morpionMsg"></p>
-    </div>
-    <canvas id="pong" class="game" width="500" height="300"></canvas>
-    <div id="clicker" class="game">
-      <h2>Clique le plus vite possible en 5 secondes !</h2>
-      <button onclick="startClicker()">Démarrer</button>
+      <div class="controls">
+        <button id="restartMorpion">Recommencer</button>
+      </div>
+    </section>
+
+    <section id="pong" class="game" aria-hidden="true">
+      <h2>Pong</h2>
+      <canvas id="pongCanvas" width="600" height="340"></canvas>
+      <div class="controls">
+        <button id="restartPong">Redémarrer Pong</button>
+      </div>
+    </section>
+
+    <section id="clicker" class="game" aria-hidden="true">
+      <h2>Clic Rapide</h2>
+      <p>Démarre puis clique sur le gros bouton pendant 5s.</p>
+      <div class="controls">
+        <button id="startClicker">Démarrer</button>
+        <button id="clickTarget" disabled>CLIC</button>
+      </div>
       <p id="clickerScore"></p>
-    </div>
-  </div>
+    </section>
+  </main>
 
   <script src="script.js"></script>
 </body>
