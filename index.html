@@ -1,38 +1,20 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Arcade Mini-Jeux</title>
-<link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8">
+  <title>Tyler GameZone</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-<h1>Arcade Mini-Jeux</h1>
-<p class="sub">Choisis un jeu, amuse-toi — responsive & léger</p>
-</header>
-
-
-<main>
-<nav class="game-list">
-<button data-game="tictactoe">Tic‑Tac‑Toe</button>
-<button data-game="memory">Memory</button>
-<button data-game="whack">Whack‑a‑Mole</button>
-<button data-game="clicker">Clicker</button>
-</nav>
-
-
-<section id="game-area">
-<!-- Les jeux seront injectés ici par js/games.js -->
-</section>
-</main>
-
-
-<footer>
-<small>Conçu pour demo — code simple, extensible.</small>
-</footer>
-
-
-<script src="js/games.js"></script>
+  <div class="intro">
+    <h1>🎉 Bienvenue dans le Tyler GameZone 🎮</h1>
+    <p>Choisis ton jeu et prépare-toi à t’éclater !</p>
+    <div class="menu">
+      <button onclick="location.href='snake.html'">🐍 Snake</button>
+      <button onclick="location.href='tic.html'">⭕❌ Tic-Tac-Toe</button>
+      <button onclick="location.href='clicker.html'">🖱️ Clicker Game</button>
+    </div>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
