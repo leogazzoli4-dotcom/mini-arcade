@@ -1,31 +1,37 @@
-:root{
---bg:#0f1720; --card:#111827; --accent:#06b6d4; --muted:#94a3b8;
+body {
+  margin: 0;
+  font-family: 'Comic Sans MS', cursive;
+  background: linear-gradient(135deg, #ff00cc, #3333ff);
+  color: white;
+  text-align: center;
+  animation: pulse 10s infinite;
 }
-*{box-sizing:border-box}
-html,body{height:100%}
-body{margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,#021427 0%, #071526 100%);color:#e6eef6;display:flex;flex-direction:column;min-height:100vh}
-header{padding:20px;text-align:center}
-header h1{margin:0;font-size:1.8rem}
-.sub{color:var(--muted);margin-top:6px}
-main{flex:1;display:flex;gap:20px;padding:20px;align-items:flex-start;justify-content:center}
-.game-list{display:flex;flex-direction:column;gap:8px;margin-right:10px}
-.game-list button{background:transparent;border:1px solid rgba(255,255,255,0.06);color:inherit;padding:10px 14px;border-radius:10px;cursor:pointer}
-.game-list button:hover{border-color:var(--accent);box-shadow:0 6px 18px rgba(6,182,212,0.06)}
-#game-area{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));padding:18px;border-radius:12px;min-width:320px;max-width:760px;width:70%}
-.card{background:var(--card);padding:12px;border-radius:10px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
-.controls{display:flex;gap:8px;align-items:center;margin-bottom:10px}
-.grid{display:grid;gap:8px}
-/* TicTacToe */
-.ttt .grid{grid-template-columns:repeat(3,90px)}
-.ttt button.cell{width:90px;height:90px;font-size:2.2rem;border-radius:8px}
-/* Memory */
-.memory .grid{grid-template-columns:repeat(4,70px)}
-.card-tile{width:70px;height:70px;border-radius:6px;background:#0b1220;display:flex;align-items:center;justify-content:center;font-size:1.4rem;cursor:pointer}
-/* Whack */
-.whack .grid{grid-template-columns:repeat(3,90px)}
-.hole{width:90px;height:90px;border-radius:10px;background:#071022;display:flex;align-items:center;justify-content:center}
-.mole{width:58px;height:58px;border-radius:50%;background:var(--accent);display:inline-block}
-/* Clicker */
-.clicker .big-btn{padding:28px;border-radius:12px;font-size:1.6rem;background:var(--accent);color:#042022;border:none;cursor:pointer}
-footer{padding:12px;text-align:center;color:var(--muted)}
-@media(max-width:800px){main{flex-direction:column;align-items:stretch}#game-area{width:100%}}
+
+@keyframes pulse {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.intro h1 {
+  font-size: 3em;
+  margin-top: 50px;
+  text-shadow: 2px 2px #000;
+}
+
+.menu button {
+  margin: 20px;
+  padding: 20px 40px;
+  font-size: 1.5em;
+  border: none;
+  border-radius: 15px;
+  background-color: #00ffcc;
+  color: #000;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.menu button:hover {
+  transform: scale(1.2);
+  background-color: #ffcc00;
+}
