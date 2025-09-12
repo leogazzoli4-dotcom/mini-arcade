@@ -1,45 +1,270 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Perroquet Zinzin 🦜</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perroquet Zinzin 3D 🦜🌪️</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/framer-motion/dist/framer-motion.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+  <script src="https://unpkg.com/three@0.158.0/examples/js/controls/OrbitControls.js"></script>
   <style>
-    body { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+    body { background: radial-gradient(circle at 10% 10%, #fff9c4 0%, #ffd1dc 30%, #b3e5fc 100%); }
     .carousel img { border-radius: 1rem; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
     .carousel { overflow: hidden; position: relative; }
     .carousel-track { display: flex; transition: transform 0.8s ease; }
-    .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.8); border-radius: 50%; padding: 0.5rem; cursor: pointer; }
+    .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.9); border-radius: 50%; padding: 0.5rem; cursor: pointer; }
     .left { left: 10px; }
     .right { right: 10px; }
+    canvas { width: 100%; height: 100%; display: block; }
+    #three-container { width: 520px; height: 520px; border-radius: 1rem; box-shadow: 0 30px 60px rgba(0,0,0,0.25); background: linear-gradient(180deg,#ffffffaa,#ffffff00); }
   </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center text-center text-white">
-  <h1 class="text-5xl font-extrabold animate-bounce mb-6">🐦 Présentation Zinzin du Perroquet 🐦</h1>
+<body class="min-h-screen flex flex-col items-center text-center text-black">
 
-  <div class="max-w-2xl carousel">
-    <div class="carousel-track">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/3/32/Macaw_-_Scarlet.jpg" alt="Perroquet 1" class="w-full">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Blue-and-yellow-macaw.jpg" alt="Perroquet 2" class="w-full">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Red-and-green-macaw.jpg" alt="Perroquet 3" class="w-full">
+  <!-- Nav -->
+  <nav class="w-full flex justify-center gap-6 p-4 bg-black bg-opacity-20 fixed top-0 z-50">
+    <a href="#home" class="font-bold text-white">Accueil</a>
+    <a href="#galerie" class="font-bold text-white">Galerie</a>
+    <a href="#about" class="font-bold text-white">À propos</a>
+    <a href="#contact" class="font-bold text-white">Contact</a>
+  </nav>
+
+  <!-- Hero -->
+  <section id="home" class="pt-20 pb-8 flex flex-col items-center gap-6">
+    <h1 class="text-6xl font-extrabold">Perroquet Zinzin — Maintenant en 3D!</h1>
+    <div class="flex flex-col md:flex-row items-center gap-8 mt-6">
+      <!-- 3D canvas -->
+      <div id="three-container" class="p-4 bg-white/60">
+        <div id="label-3d" class="text-sm text-left mb-2">Interagis : glisse pour tourner, molette pour zoomer, double-clic pour recentrer</div>
+        <div id="three-root" style="width:100%;height:460px;border-radius:8px;overflow:hidden"></div>
+        <div class="flex gap-2 mt-3 justify-center">
+          <button id="toggle-anim" class="px-4 py-2 rounded bg-yellow-400 font-bold">Pause vol</button>
+          <button id="snapshot" class="px-4 py-2 rounded bg-blue-500 text-white font-bold">📸 Capture</button>
+          <button id="confetti-btn" class="px-4 py-2 rounded bg-pink-500 text-white font-bold">🎉 Confettis</button>
+        </div>
+      </div>
+
+      <!-- Sidebar info -->
+      <div class="max-w-xl text-left">
+        <h2 class="text-3xl font-bold">Le Coco Monstrueux</h2>
+        <p class="mt-3 bg-white/80 p-4 rounded">Voici une version 3D simple et basse-poly du perroquet zinzin, construite sur la page avec <strong>Three.js</strong>. Il flotte, bat des ailes et répond à tes interactions. Tout reste sur cette page, pas besoin de ressources externes compliquées.</p>
+
+        <ul class="mt-4 space-y-2">
+          <li>🖱️ Glisser pour tourner</li>
+          <li>🔎 Molette pour zoomer</li>
+          <li>⏯️ Bouton pour mettre en pause l’animation</li>
+          <li>📸 Capture pour télécharger une image PNG</li>
+        </ul>
+
+        <div class="mt-6 p-4 bg-white/80 rounded">
+          <h3 class="font-bold">Mini-contrôles</h3>
+          <div class="mt-2 flex gap-2">
+            <button id="wing-fast" class="px-3 py-1 rounded bg-green-400 font-bold">Ailes rapides</button>
+            <button id="wing-slow" class="px-3 py-1 rounded bg-orange-400 font-bold">Ailes lentes</button>
+            <button id="reset-view" class="px-3 py-1 rounded bg-gray-300 font-bold">Reset vue</button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="carousel-btn left" onclick="moveSlide(-1)">⬅️</div>
-    <div class="carousel-btn right" onclick="moveSlide(1)">➡️</div>
-  </div>
+  </section>
 
-  <p class="mt-6 text-xl animate-pulse">Ce perroquet parle, chante, danse... et adore voler dans ton imagination ! 🎶🦜</p>
+  <!-- Galerie -->
+  <section id="galerie" class="w-full p-10 bg-gradient-to-r from-green-300 to-purple-300">
+    <h2 class="text-4xl font-bold mb-6 text-center">Galerie & Carrousel</h2>
+    <div class="max-w-4xl mx-auto carousel">
+      <div class="carousel-track flex">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/32/Macaw_-_Scarlet.jpg" alt="Perroquet 1" class="w-full max-w-2xl rounded-lg mr-4">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Blue-and-yellow-macaw.jpg" alt="Perroquet 2" class="w-full max-w-2xl rounded-lg mr-4">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Red-and-green-macaw.jpg" alt="Perroquet 3" class="w-full max-w-2xl rounded-lg">
+      </div>
+    </div>
+  </section>
 
+  <!-- About -->
+  <section id="about" class="w-full p-12 bg-yellow-200">
+    <h2 class="text-4xl font-bold text-center mb-6">À propos</h2>
+    <div class="max-w-3xl mx-auto text-left bg-white p-6 rounded shadow">
+      <p>Le perroquet zinzin est là pour te divertir: sons, animations, confettis, et maintenant un compagnon 3D interactif. Tout se passe sur cette page — pas de reload, pas de popup gênant.</p>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="w-full p-12 bg-pink-200">
+    <h2 class="text-4xl font-bold text-center mb-6">Contact</h2>
+    <div class="max-w-lg mx-auto bg-white p-6 rounded shadow">
+      <form>
+        <input class="w-full p-2 border rounded mb-3" placeholder="Ton nom">
+        <input class="w-full p-2 border rounded mb-3" placeholder="Ton email">
+        <textarea class="w-full p-2 border rounded mb-3" placeholder="Message au perroquet"></textarea>
+        <button class="w-full py-2 rounded bg-green-500 text-white font-bold">Envoyer</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Scripts: Three.js scene + UI logic -->
   <script>
-    let index = 0;
-    const track = document.querySelector('.carousel-track');
-    const slides = document.querySelectorAll('.carousel img');
+    // Basic carousel small behaviour
+    (function(){
+      const track = document.querySelector('.carousel-track');
+      if(track){
+        let pos = 0;
+        function slide(){ track.style.transform = `translateX(-${pos}px)`; }
+        // simple auto scroll
+        setInterval(()=>{ pos += 400; if(pos > track.scrollWidth - track.clientWidth) pos = 0; slide(); }, 3000);
+      }
+    })();
 
-    function moveSlide(direction) {
-      index = (index + direction + slides.length) % slides.length;
-      track.style.transform = `translateX(-${index * 100}%)`;
+    // --- Three.js Scene ---
+    let scene, camera, renderer, controls;
+    let parrotGroup, wingLeft, wingRight;
+    let animRunning = true;
+    let wingSpeed = 1.0;
+
+    function initThree(){
+      const root = document.getElementById('three-root');
+      scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0xf0f8ff, 0.002);
+
+      const w = root.clientWidth, h = root.clientHeight;
+      camera = new THREE.PerspectiveCamera(50, w/h, 0.1, 2000);
+      camera.position.set(0, 1.2, 3);
+
+      renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+      renderer.setSize(w,h);
+      root.appendChild(renderer.domElement);
+
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.minDistance = 1.2;
+      controls.maxDistance = 8;
+
+      // lights
+      const hemi = new THREE.HemisphereLight(0xffffbb, 0x080820, 0.9);
+      scene.add(hemi);
+      const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+      dir.position.set(5,10,7);
+      scene.add(dir);
+
+      // ground glow
+      const groundMat = new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:0.06});
+      const ground = new THREE.Mesh(new THREE.CircleGeometry(6,64), groundMat);
+      ground.rotation.x = -Math.PI/2; ground.position.y = -0.8;
+      scene.add(ground);
+
+      // Build a low-poly parrot from primitives
+      parrotGroup = new THREE.Group();
+
+      // Body
+      const bodyGeom = new THREE.SphereGeometry(0.6, 32, 32);
+      const bodyMat = new THREE.MeshStandardMaterial({color:0xff5a5a, metalness:0.1, roughness:0.6});
+      const body = new THREE.Mesh(bodyGeom, bodyMat);
+      body.scale.set(1,1.1,1);
+      parrotGroup.add(body);
+
+      // Head
+      const head = new THREE.Mesh(new THREE.SphereGeometry(0.34, 24,24), new THREE.MeshStandardMaterial({color:0xffe082}));
+      head.position.set(0,0.7,0.05);
+      parrotGroup.add(head);
+
+      // Beak
+      const beak = new THREE.Mesh(new THREE.ConeGeometry(0.16,0.28,16), new THREE.MeshStandardMaterial({color:0x5d4037}));
+      beak.rotation.x = Math.PI/2;
+      beak.position.set(0.04,0.6,0.35);
+      parrotGroup.add(beak);
+
+      // Eyes
+      const eyeMat = new THREE.MeshStandardMaterial({color:0x000000});
+      const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.04,8,8), eyeMat); eyeL.position.set(-0.15,0.72,0.18);
+      const eyeR = eyeL.clone(); eyeR.position.set(0.15,0.72,0.18);
+      parrotGroup.add(eyeL); parrotGroup.add(eyeR);
+
+      // Wings (left/right) as thin boxes
+      const wingGeom = new THREE.BoxGeometry(0.08,0.7,1.1);
+      const wingMat = new THREE.MeshStandardMaterial({color:0x4fc3f7, side: THREE.DoubleSide});
+      wingLeft = new THREE.Mesh(wingGeom, wingMat); wingLeft.position.set(-0.58,0.0,0); wingLeft.rotation.z = 0.6; wingLeft.geometry.translate(0, -0.35, 0);
+      wingRight = wingLeft.clone(); wingRight.position.set(0.58,0.0,0); wingRight.rotation.z = -0.6;
+      parrotGroup.add(wingLeft); parrotGroup.add(wingRight);
+
+      // Tail
+      const tailGeom = new THREE.BoxGeometry(0.2,0.8,0.15);
+      const tail = new THREE.Mesh(tailGeom, new THREE.MeshStandardMaterial({color:0x66bb6a}));
+      tail.position.set(0,-0.4,-0.5); tail.rotation.x = -0.3;
+      parrotGroup.add(tail);
+
+      parrotGroup.position.y = 0;
+      scene.add(parrotGroup);
+
+      // Resize handling
+      window.addEventListener('resize', onWindowResize);
+
+      animate();
     }
+
+    function onWindowResize(){
+      const root = document.getElementById('three-root');
+      const w = root.clientWidth, h = root.clientHeight;
+      camera.aspect = w/h; camera.updateProjectionMatrix(); renderer.setSize(w,h);
+    }
+
+    let clock = new THREE.Clock();
+    function animate(){
+      requestAnimationFrame(animate);
+      const t = clock.getElapsedTime();
+
+      // floating motion
+      if(animRunning){
+        parrotGroup.position.y = Math.sin(t * 1.2) * 0.12;
+        parrotGroup.rotation.y = Math.sin(t * 0.25) * 0.15;
+      }
+
+      // wings flapping
+      const flap = Math.sin(t * 6 * wingSpeed) * 0.8;
+      wingLeft.rotation.z = 0.6 + flap * 0.4;
+      wingRight.rotation.z = -0.6 - flap * 0.4;
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    // Boot the scene when DOM ready
+    window.addEventListener('DOMContentLoaded', ()=>{ initThree(); setupUI(); });
+
+    // UI bindings
+    function setupUI(){
+      document.getElementById('toggle-anim').addEventListener('click', ()=>{
+        animRunning = !animRunning;
+        document.getElementById('toggle-anim').textContent = animRunning ? 'Pause vol' : 'Reprendre vol';
+      });
+      document.getElementById('confetti-btn').addEventListener('click', ()=>{ confetti({particleCount:200, spread:160}); });
+      document.getElementById('wing-fast').addEventListener('click', ()=>{ wingSpeed = 2.5; });
+      document.getElementById('wing-slow').addEventListener('click', ()=>{ wingSpeed = 0.6; });
+      document.getElementById('reset-view').addEventListener('click', ()=>{ controls.reset(); camera.position.set(0,1.2,3); });
+
+      // Snapshot
+      document.getElementById('snapshot').addEventListener('click', ()=>{
+        renderer.domElement.toBlob(function(blob){
+          const a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'perroquet-zinzin.png';
+          a.click();
+        });
+      });
+
+      // simple accessibility: double-click recentre
+      const root = document.getElementById('three-root');
+      root.addEventListener('dblclick', ()=>{ controls.reset(); camera.position.set(0,1.2,3); });
+    }
+
+    // Small safety: if WebGL not available, show friendly message
+    if(!window.WebGLRenderingContext){
+      document.getElementById('three-root').innerHTML = '<div style="padding:40px">Votre navigateur ne supporte pas WebGL. Essaie Chrome, Edge, ou Firefox récent.</div>';
+    }
+
   </script>
+
 </body>
 </html>
