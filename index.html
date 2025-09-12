@@ -2,230 +2,43 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Tyler GameZone</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perroquet Zinzin 🦜</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/framer-motion/dist/framer-motion.umd.js"></script>
   <style>
-    body {
-      margin: 0;
-      font-family: 'Comic Sans MS', cursive;
-      background: linear-gradient(135deg, #ff00cc, #3333ff);
-      color: white;
-      text-align: center;
-      animation: pulse 10s infinite;
-    }
-
-    @keyframes pulse {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    .intro h1 {
-      font-size: 3em;
-      margin-top: 50px;
-      text-shadow: 2px 2px #000;
-    }
-
-    .menu button {
-      margin: 20px;
-      padding: 20px 40px;
-      font-size: 1.5em;
-      border: none;
-      border-radius: 15px;
-      background-color: #00ffcc;
-      color: #000;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-
-    .menu button:hover {
-      transform: scale(1.2);
-      background-color: #ffcc00;
-    }
-
-    .game-section {
-      display: none;
-      margin-top: 30px;
-    }
-
-    canvas {
-      background: #000;
-      margin-top: 20px;
-    }
-
-    #ticBoard {
-      display: grid;
-      grid-template-columns: repeat(3, 100px);
-      grid-gap: 5px;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
-    .cell {
-      width: 100px;
-      height: 100px;
-      background-color: white;
-      color: black;
-      font-size: 2em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
+    body { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+    .carousel img { border-radius: 1rem; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+    .carousel { overflow: hidden; position: relative; }
+    .carousel-track { display: flex; transition: transform 0.8s ease; }
+    .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.8); border-radius: 50%; padding: 0.5rem; cursor: pointer; }
+    .left { left: 10px; }
+    .right { right: 10px; }
   </style>
 </head>
-<body>
-  <div class="intro">
-    <h1>🎉 Bienvenue dans le Tyler GameZone 🎮</h1>
-    <p>Choisis ton jeu et prépare-toi à t’éclater !</p>
-    <div class="menu">
-      <button onclick="showGame('snake')">🐍 Snake</button>
-      <button onclick="showGame('tic')">⭕❌ Tic-Tac-Toe</button>
-      <button onclick="showGame('clicker')">🖱️ Clicker Game</button>
+<body class="min-h-screen flex flex-col items-center justify-center text-center text-white">
+  <h1 class="text-5xl font-extrabold animate-bounce mb-6">🐦 Présentation Zinzin du Perroquet 🐦</h1>
+
+  <div class="max-w-2xl carousel">
+    <div class="carousel-track">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/3/32/Macaw_-_Scarlet.jpg" alt="Perroquet 1" class="w-full">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Blue-and-yellow-macaw.jpg" alt="Perroquet 2" class="w-full">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Red-and-green-macaw.jpg" alt="Perroquet 3" class="w-full">
     </div>
+    <div class="carousel-btn left" onclick="moveSlide(-1)">⬅️</div>
+    <div class="carousel-btn right" onclick="moveSlide(1)">➡️</div>
   </div>
 
-  <div id="snake" class="game-section">
-    <h2>🐍 Snake</h2>
-    <canvas id="snakeCanvas" width="400" height="400"></canvas>
-  </div>
-
-  <div id="tic" class="game-section">
-    <h2>⭕❌ Tic-Tac-Toe</h2>
-    <div id="ticBoard"></div>
-    <p id="ticStatus"></p>
-  </div>
-
-  <div id="clicker" class="game-section">
-    <h2>🖱️ Clicker Game</h2>
-    <button onclick="increment()">Clique-moi !</button>
-    <p>Score : <span id="score">0</span></p>
-  </div>
+  <p class="mt-6 text-xl animate-pulse">Ce perroquet parle, chante, danse... et adore voler dans ton imagination ! 🎶🦜</p>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      console.log("Tyler GameZone prêt à exploser les scores !");
-      initTicTacToe();
-      initSnake();
-    });
+    let index = 0;
+    const track = document.querySelector('.carousel-track');
+    const slides = document.querySelectorAll('.carousel img');
 
-    function showGame(gameId) {
-      document.querySelectorAll('.game-section').forEach(section => {
-        section.style.display = 'none';
-      });
-      document.getElementById(gameId).style.display = 'block';
-    }
-
-    // Clicker Game
-    let score = 0;
-    function increment() {
-      score++;
-      document.getElementById("score").textContent = score;
-    }
-
-    // Tic-Tac-Toe
-    let currentPlayer = "X";
-    function initTicTacToe() {
-      const board = document.getElementById("ticBoard");
-      board.innerHTML = "";
-      for (let i = 0; i < 9; i++) {
-        const cell = document.createElement("div");
-        cell.className = "cell";
-        cell.addEventListener("click", () => play(cell));
-        board.appendChild(cell);
-      }
-      document.getElementById("ticStatus").textContent = "Joueur : X";
-    }
-
-    function play(cell) {
-      if (cell.textContent === "") {
-        cell.textContent = currentPlayer;
-        if (checkWin()) {
-          document.getElementById("ticStatus").textContent = `Le joueur ${currentPlayer} a gagné !`;
-        } else {
-          currentPlayer = currentPlayer === "X" ? "O" : "X";
-          document.getElementById("ticStatus").textContent = `Joueur : ${currentPlayer}`;
-        }
-      }
-    }
-
-    function checkWin() {
-      const cells = document.querySelectorAll(".cell");
-      const combos = [
-        [0,1,2],[3,4,5],[6,7,8],
-        [0,3,6],[1,4,7],[2,5,8],
-        [0,4,8],[2,4,6]
-      ];
-      return combos.some(combo => {
-        const [a,b,c] = combo;
-        return cells[a].textContent &&
-               cells[a].textContent === cells[b].textContent &&
-               cells[a].textContent === cells[c].textContent;
-      });
-    }
-
-    // Snake Game
-    function initSnake() {
-      const canvas = document.getElementById("snakeCanvas");
-      const ctx = canvas.getContext("2d");
-      const box = 20;
-      let snake = [{ x: 9 * box, y: 10 * box }];
-      let direction = "RIGHT";
-      let food = {
-        x: Math.floor(Math.random() * 19) * box,
-        y: Math.floor(Math.random() * 19) * box
-      };
-
-      document.addEventListener("keydown", e => {
-        if (e.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
-        if (e.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
-        if (e.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
-        if (e.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
-      });
-
-      function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (let i = 0; i < snake.length; i++) {
-          ctx.fillStyle = i === 0 ? "lime" : "white";
-          ctx.fillRect(snake[i].x, snake[i].y, box, box);
-        }
-
-        ctx.fillStyle = "red";
-        ctx.fillRect(food.x, food.y, box, box);
-
-        let headX = snake[0].x;
-        let headY = snake[0].y;
-
-        if (direction === "LEFT") headX -= box;
-        if (direction === "UP") headY -= box;
-        if (direction === "RIGHT") headX += box;
-        if (direction === "DOWN") headY += box;
-
-        if (headX === food.x && headY === food.y) {
-          food = {
-            x: Math.floor(Math.random() * 19) * box,
-            y: Math.floor(Math.random() * 19) * box
-          };
-        } else {
-          snake.pop();
-        }
-
-        const newHead = { x: headX, y: headY };
-
-        if (
-          headX < 0 || headX >= canvas.width ||
-          headY < 0 || headY >= canvas.height ||
-          snake.some(segment => segment.x === newHead.x && segment.y === newHead.y)
-        ) {
-          alert("Game Over !");
-          snake = [{ x: 9 * box, y: 10 * box }];
-          direction = "RIGHT";
-          return;
-        }
-
-        snake.unshift(newHead);
-      }
-
-      setInterval(draw, 100);
+    function moveSlide(direction) {
+      index = (index + direction + slides.length) % slides.length;
+      track.style.transform = `translateX(-${index * 100}%)`;
     }
   </script>
 </body>
