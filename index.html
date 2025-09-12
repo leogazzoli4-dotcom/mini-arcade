@@ -34,6 +34,7 @@
   <!-- Hero -->
   <section id="home" class="pt-20 pb-8 flex flex-col items-center gap-6">
     <h1 class="text-6xl font-extrabold">Perroquet Zinzin — Maintenant en 3D!</h1>
+    <img src="images/perroquet-central.jpg" alt="Perroquet central" class="rounded-2xl shadow-2xl w-96"> 
     <div class="flex flex-col md:flex-row items-center gap-8 mt-6">
       <!-- 3D canvas -->
       <div id="three-container" class="p-4 bg-white/60">
@@ -75,9 +76,9 @@
     <h2 class="text-4xl font-bold mb-6 text-center">Galerie & Carrousel</h2>
     <div class="max-w-4xl mx-auto carousel">
       <div class="carousel-track flex">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/3/32/Macaw_-_Scarlet.jpg" alt="Perroquet 1" class="w-full max-w-2xl rounded-lg mr-4">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Blue-and-yellow-macaw.jpg" alt="Perroquet 2" class="w-full max-w-2xl rounded-lg mr-4">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Red-and-green-macaw.jpg" alt="Perroquet 3" class="w-full max-w-2xl rounded-lg">
+        <img src="images/perroquet1.jpg" alt="Perroquet 1" class="w-full max-w-2xl rounded-lg mr-4">
+        <img src="images/perroquet2.jpg" alt="Perroquet 2" class="w-full max-w-2xl rounded-lg mr-4">
+        <img src="images/perroquet3.jpg" alt="Perroquet 3" class="w-full max-w-2xl rounded-lg">
       </div>
     </div>
   </section>
@@ -111,7 +112,6 @@
       if(track){
         let pos = 0;
         function slide(){ track.style.transform = `translateX(-${pos}px)`; }
-        // simple auto scroll
         setInterval(()=>{ pos += 400; if(pos > track.scrollWidth - track.clientWidth) pos = 0; slide(); }, 3000);
       }
     })();
@@ -142,54 +142,43 @@
       controls.minDistance = 1.2;
       controls.maxDistance = 8;
 
-      // lights
       const hemi = new THREE.HemisphereLight(0xffffbb, 0x080820, 0.9);
       scene.add(hemi);
       const dir = new THREE.DirectionalLight(0xffffff, 0.8);
       dir.position.set(5,10,7);
       scene.add(dir);
 
-      // ground glow
       const groundMat = new THREE.MeshBasicMaterial({color:0xffffff, transparent:true, opacity:0.06});
       const ground = new THREE.Mesh(new THREE.CircleGeometry(6,64), groundMat);
       ground.rotation.x = -Math.PI/2; ground.position.y = -0.8;
       scene.add(ground);
 
-      // Build a low-poly parrot from primitives
       parrotGroup = new THREE.Group();
 
-      // Body
-      const bodyGeom = new THREE.SphereGeometry(0.6, 32, 32);
-      const bodyMat = new THREE.MeshStandardMaterial({color:0xff5a5a, metalness:0.1, roughness:0.6});
-      const body = new THREE.Mesh(bodyGeom, bodyMat);
+      const body = new THREE.Mesh(new THREE.SphereGeometry(0.6, 32, 32), new THREE.MeshStandardMaterial({color:0xff5a5a, metalness:0.1, roughness:0.6}));
       body.scale.set(1,1.1,1);
       parrotGroup.add(body);
 
-      // Head
       const head = new THREE.Mesh(new THREE.SphereGeometry(0.34, 24,24), new THREE.MeshStandardMaterial({color:0xffe082}));
       head.position.set(0,0.7,0.05);
       parrotGroup.add(head);
 
-      // Beak
       const beak = new THREE.Mesh(new THREE.ConeGeometry(0.16,0.28,16), new THREE.MeshStandardMaterial({color:0x5d4037}));
       beak.rotation.x = Math.PI/2;
       beak.position.set(0.04,0.6,0.35);
       parrotGroup.add(beak);
 
-      // Eyes
       const eyeMat = new THREE.MeshStandardMaterial({color:0x000000});
       const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.04,8,8), eyeMat); eyeL.position.set(-0.15,0.72,0.18);
       const eyeR = eyeL.clone(); eyeR.position.set(0.15,0.72,0.18);
       parrotGroup.add(eyeL); parrotGroup.add(eyeR);
 
-      // Wings (left/right) as thin boxes
       const wingGeom = new THREE.BoxGeometry(0.08,0.7,1.1);
       const wingMat = new THREE.MeshStandardMaterial({color:0x4fc3f7, side: THREE.DoubleSide});
       wingLeft = new THREE.Mesh(wingGeom, wingMat); wingLeft.position.set(-0.58,0.0,0); wingLeft.rotation.z = 0.6; wingLeft.geometry.translate(0, -0.35, 0);
       wingRight = wingLeft.clone(); wingRight.position.set(0.58,0.0,0); wingRight.rotation.z = -0.6;
       parrotGroup.add(wingLeft); parrotGroup.add(wingRight);
 
-      // Tail
       const tailGeom = new THREE.BoxGeometry(0.2,0.8,0.15);
       const tail = new THREE.Mesh(tailGeom, new THREE.MeshStandardMaterial({color:0x66bb6a}));
       tail.position.set(0,-0.4,-0.5); tail.rotation.x = -0.3;
@@ -198,7 +187,6 @@
       parrotGroup.position.y = 0;
       scene.add(parrotGroup);
 
-      // Resize handling
       window.addEventListener('resize', onWindowResize);
 
       animate();
@@ -215,13 +203,11 @@
       requestAnimationFrame(animate);
       const t = clock.getElapsedTime();
 
-      // floating motion
       if(animRunning){
         parrotGroup.position.y = Math.sin(t * 1.2) * 0.12;
         parrotGroup.rotation.y = Math.sin(t * 0.25) * 0.15;
       }
 
-      // wings flapping
       const flap = Math.sin(t * 6 * wingSpeed) * 0.8;
       wingLeft.rotation.z = 0.6 + flap * 0.4;
       wingRight.rotation.z = -0.6 - flap * 0.4;
@@ -230,10 +216,8 @@
       renderer.render(scene, camera);
     }
 
-    // Boot the scene when DOM ready
     window.addEventListener('DOMContentLoaded', ()=>{ initThree(); setupUI(); });
 
-    // UI bindings
     function setupUI(){
       document.getElementById('toggle-anim').addEventListener('click', ()=>{
         animRunning = !animRunning;
@@ -244,7 +228,6 @@
       document.getElementById('wing-slow').addEventListener('click', ()=>{ wingSpeed = 0.6; });
       document.getElementById('reset-view').addEventListener('click', ()=>{ controls.reset(); camera.position.set(0,1.2,3); });
 
-      // Snapshot
       document.getElementById('snapshot').addEventListener('click', ()=>{
         renderer.domElement.toBlob(function(blob){
           const a = document.createElement('a');
@@ -254,12 +237,10 @@
         });
       });
 
-      // simple accessibility: double-click recentre
       const root = document.getElementById('three-root');
       root.addEventListener('dblclick', ()=>{ controls.reset(); camera.position.set(0,1.2,3); });
     }
 
-    // Small safety: if WebGL not available, show friendly message
     if(!window.WebGLRenderingContext){
       document.getElementById('three-root').innerHTML = '<div style="padding:40px">Votre navigateur ne supporte pas WebGL. Essaie Chrome, Edge, ou Firefox récent.</div>';
     }
