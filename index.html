@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Tyler GameZone</title>
-  <link rel="stylesheet" href="style.css">
   <style>
     body {
       margin: 0;
@@ -52,6 +51,26 @@
       background: #000;
       margin-top: 20px;
     }
+
+    #ticBoard {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      grid-gap: 5px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      background-color: white;
+      color: black;
+      font-size: 2em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -68,13 +87,12 @@
   <div id="snake" class="game-section">
     <h2>🐍 Snake</h2>
     <canvas id="snakeCanvas" width="400" height="400"></canvas>
-    <!-- Ajoute ici ton code JS pour Snake -->
   </div>
 
   <div id="tic" class="game-section">
     <h2>⭕❌ Tic-Tac-Toe</h2>
     <div id="ticBoard"></div>
-    <!-- Ajoute ici ton code JS pour Tic-Tac-Toe -->
+    <p id="ticStatus"></p>
   </div>
 
   <div id="clicker" class="game-section">
@@ -86,6 +104,8 @@
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       console.log("Tyler GameZone prêt à exploser les scores !");
+      initTicTacToe();
+      initSnake();
     });
 
     function showGame(gameId) {
@@ -95,11 +115,117 @@
       document.getElementById(gameId).style.display = 'block';
     }
 
-    // Exemple simple pour le Clicker Game
+    // Clicker Game
     let score = 0;
     function increment() {
       score++;
       document.getElementById("score").textContent = score;
+    }
+
+    // Tic-Tac-Toe
+    let currentPlayer = "X";
+    function initTicTacToe() {
+      const board = document.getElementById("ticBoard");
+      board.innerHTML = "";
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.addEventListener("click", () => play(cell));
+        board.appendChild(cell);
+      }
+      document.getElementById("ticStatus").textContent = "Joueur : X";
+    }
+
+    function play(cell) {
+      if (cell.textContent === "") {
+        cell.textContent = currentPlayer;
+        if (checkWin()) {
+          document.getElementById("ticStatus").textContent = `Le joueur ${currentPlayer} a gagné !`;
+        } else {
+          currentPlayer = currentPlayer === "X" ? "O" : "X";
+          document.getElementById("ticStatus").textContent = `Joueur : ${currentPlayer}`;
+        }
+      }
+    }
+
+    function checkWin() {
+      const cells = document.querySelectorAll(".cell");
+      const combos = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+      ];
+      return combos.some(combo => {
+        const [a,b,c] = combo;
+        return cells[a].textContent &&
+               cells[a].textContent === cells[b].textContent &&
+               cells[a].textContent === cells[c].textContent;
+      });
+    }
+
+    // Snake Game
+    function initSnake() {
+      const canvas = document.getElementById("snakeCanvas");
+      const ctx = canvas.getContext("2d");
+      const box = 20;
+      let snake = [{ x: 9 * box, y: 10 * box }];
+      let direction = "RIGHT";
+      let food = {
+        x: Math.floor(Math.random() * 19) * box,
+        y: Math.floor(Math.random() * 19) * box
+      };
+
+      document.addEventListener("keydown", e => {
+        if (e.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
+        if (e.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
+        if (e.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
+        if (e.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
+      });
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < snake.length; i++) {
+          ctx.fillStyle = i === 0 ? "lime" : "white";
+          ctx.fillRect(snake[i].x, snake[i].y, box, box);
+        }
+
+        ctx.fillStyle = "red";
+        ctx.fillRect(food.x, food.y, box, box);
+
+        let headX = snake[0].x;
+        let headY = snake[0].y;
+
+        if (direction === "LEFT") headX -= box;
+        if (direction === "UP") headY -= box;
+        if (direction === "RIGHT") headX += box;
+        if (direction === "DOWN") headY += box;
+
+        if (headX === food.x && headY === food.y) {
+          food = {
+            x: Math.floor(Math.random() * 19) * box,
+            y: Math.floor(Math.random() * 19) * box
+          };
+        } else {
+          snake.pop();
+        }
+
+        const newHead = { x: headX, y: headY };
+
+        if (
+          headX < 0 || headX >= canvas.width ||
+          headY < 0 || headY >= canvas.height ||
+          snake.some(segment => segment.x === newHead.x && segment.y === newHead.y)
+        ) {
+          alert("Game Over !");
+          snake = [{ x: 9 * box, y: 10 * box }];
+          direction = "RIGHT";
+          return;
+        }
+
+        snake.unshift(newHead);
+      }
+
+      setInterval(draw, 100);
     }
   </script>
 </body>
