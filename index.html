@@ -2,99 +2,103 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Site de la Folie Totale</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Popups - Bob & Brawl Stars</title>
   <style>
     body {
-      margin: 0;
-      font-family: 'Comic Sans MS', cursive;
-      background-color: black;
-      color: white;
+      font-family: Arial, sans-serif;
       text-align: center;
-      animation: changeBg 5s infinite;
+      background: #f0f4ff;
+      padding: 50px;
     }
-
-    @keyframes changeBg {
-      0% { background-color: black; }
-      25% { background-color: purple; }
-      50% { background-color: orange; }
-      75% { background-color: red; }
-      100% { background-color: black; }
-    }
-
     h1 {
-      font-size: 3em;
-      animation: spin 3s infinite linear;
+      margin-bottom: 30px;
     }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
     button {
-      padding: 20px;
-      margin: 10px;
-      font-size: 1.2em;
-      border-radius: 10px;
+      background: #4a90e2;
+      color: white;
       border: none;
+      padding: 15px 25px;
+      margin: 10px;
+      border-radius: 12px;
       cursor: pointer;
+      font-size: 18px;
       transition: 0.3s;
     }
-
     button:hover {
-      background-color: yellow;
-      color: black;
+      background: #357ab7;
     }
-
-    #secret {
+    .popup {
       display: none;
-      font-size: 2em;
-      margin-top: 20px;
-      color: lime;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      justify-content: center;
+      align-items: center;
     }
-
-    .bob-container {
-      margin-top: 30px;
+    .popup-content {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 400px;
+      text-align: center;
+      position: relative;
     }
-
-    .bob-container img {
-      width: 300px;
-      border-radius: 20px;
-      box-shadow: 0 0 20px white;
+    .popup-content img {
+      max-width: 100%;
+      border-radius: 12px;
+    }
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 20px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
+  <h1>Popups Bob l'Éponge & Brawl Stars</h1>
 
-  <h1>Bienvenue dans le Chaos 🎉</h1>
+  <button onclick="openPopup('bob')">Voir Bob l'Éponge</button>
+  <button onclick="openPopup('shelly')">Voir Shelly (Brawl Stars)</button>
+  <button onclick="openPopup('colt')">Voir Colt (Brawl Stars)</button>
 
-  <video width="600" autoplay loop muted>
-    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-    Ton navigateur ne supporte pas les vidéos.
-  </video>
-
-  <div>
-    <button onclick="playSound('https://www.soundjay.com/button/sounds/button-16.mp3')">Bouton Rigolo 1</button>
-    <button onclick="playSound('https://www.soundjay.com/button/sounds/button-10.mp3')">Bouton Rigolo 2</button>
-    <button onclick="showSecret()">NE CLIQUE PAS</button>
+  <!-- Popups -->
+  <div id="bob" class="popup">
+    <div class="popup-content">
+      <span class="close-btn" onclick="closePopup('bob')">&times;</span>
+      <h2>Bob l'Éponge</h2>
+      <img src="https://upload.wikimedia.org/wikipedia/en/3/3b/SpongeBob_SquarePants_character.png" alt="Bob l'Éponge">
+    </div>
   </div>
 
-  <div id="secret">😱 Tu as cliqué... Prépare-toi à l'inattendu !</div>
+  <div id="shelly" class="popup">
+    <div class="popup-content">
+      <span class="close-btn" onclick="closePopup('shelly')">&times;</span>
+      <h2>Shelly - Brawl Stars</h2>
+      <img src="https://static.wikia.nocookie.net/brawlstars/images/6/6c/Shelly_Skin-Default.png" alt="Shelly Brawl Stars">
+    </div>
+  </div>
 
-  <div class="bob-container">
-    <img src="https://upload.wikimedia.org/wikipedia/en/3/3f/SpongeBob_SquarePants_character.svg" alt="Bob l'éponge">
+  <div id="colt" class="popup">
+    <div class="popup-content">
+      <span class="close-btn" onclick="closePopup('colt')">&times;</span>
+      <h2>Colt - Brawl Stars</h2>
+      <img src="https://static.wikia.nocookie.net/brawlstars/images/8/89/Colt_Skin-Default.png" alt="Colt Brawl Stars">
+    </div>
   </div>
 
   <script>
-    function playSound(url) {
-      const audio = new Audio(url);
-      audio.play();
+    function openPopup(id) {
+      document.getElementById(id).style.display = 'flex';
     }
-
-    function showSecret() {
-      document.getElementById('secret').style.display = 'block';
+    function closePopup(id) {
+      document.getElementById(id).style.display = 'none';
     }
   </script>
-
 </body>
 </html>
