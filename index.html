@@ -1,243 +1,71 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Les aimants — Découverte interactive</title>
-  <meta name="description" content="Une page éducative et interactive sur les aimants : types, usages, expériences simples et simulation interactive." />
-  <style>
-    :root{--bg:#0f1724;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8;--glass:rgba(255,255,255,0.03)}
-    *{box-sizing:border-box}
-    body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin:0; background:linear-gradient(180deg,#071027 0%, #071a2b 60%); color:#e6eef8; line-height:1.5}
-    .wrap{max-width:1100px; margin:32px auto; padding:24px}
-    header{display:flex; gap:16px; align-items:center}
-    header h1{margin:0; font-size:28px}
-    .lead{color:var(--muted); margin-top:6px}
-    main{display:grid; grid-template-columns:1fr 360px; gap:20px; margin-top:22px}
-    @media(max-width:960px){main{grid-template-columns:1fr}}
-    .card{background:var(--card); border-radius:14px; padding:18px; box-shadow:0 6px 18px rgba(2,6,23,0.6);}
-    h2{margin:6px 0 12px}
-    ul{padding-left:18px}
-    .small{font-size:13px; color:var(--muted)}
-
-    /* Simulation styles */
-    .sim{height:320px; position:relative; overflow:hidden; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:10px; padding:12px}
-    .magnet{width:120px; height:60px; border-radius:10px; background:linear-gradient(90deg,#ef4444 0%, #ef4444 49%, #3b82f6 51%, #3b82f6 100%); position:absolute; left:20px; top:40%; transform:translateY(-50%); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700}
-    .magnet .label{font-size:12px; opacity:0.9}
-    .iron{width:24px; height:24px; border-radius:4px; background:#f1f5f9; color:#0b1220; display:grid; place-items:center; position:absolute; left:260px; top:50%; transform:translate(-50%,-50%); box-shadow:0 6px 20px rgba(2,6,23,0.6)}
-    .field-lines{position:absolute; inset:0; pointer-events:none}
-    .controls{display:flex; gap:10px; align-items:center; margin-top:12px}
-    input[type=range]{width:100%}
-    .tag{display:inline-block; padding:6px 10px; border-radius:999px; background:var(--glass); color:var(--muted); font-size:13px}
-    footer{margin-top:20px; color:var(--muted); font-size:13px}
-    .btn{background:linear-gradient(90deg,#06b6d4,#3b82f6); padding:8px 12px; border-radius:8px; color:#07203b; font-weight:700; border:none; cursor:pointer}
-    .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
-    .experiment{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.008)); border-radius:8px; padding:12px}
-    a{color:var(--accent)}
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Escargot Turbo</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐌</text></svg>">
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="card" style="padding:12px 16px; display:flex; gap:12px; align-items:center">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" aria-hidden>
-          <rect x="1" y="4" width="22" height="16" rx="3" fill="#ef4444"/>
-          <rect x="1" y="4" width="22" height="8" rx="3" fill="#3b82f6"/>
-        </svg>
-        <div>
-          <h1>Les aimants — découverte interactive</h1>
-          <div class="lead">Types, usages, expériences simples et une mini-simulation</div>
-        </div>
-      </div>
-    </header>
+  <header>
+    <h1>🐌 L’Escargot Turbo 🐌</h1>
+    <p>« Il va lentement… mais il va fort. »</p>
+  </header>
 
-    <main>
-      <section>
-        <div class="card">
-          <h2>Qu'est-ce qu'un aimant ?</h2>
-          <p>Un <strong>aimant</strong> est un objet qui produit un champ magnétique. Il attire certaines matières (comme le fer, le nickel, le cobalt) et a deux pôles : <em>Nord</em> et <em>Sud</em>. Les aimants peuvent être <strong>naturels</strong> (comme la magnétite) ou <strong>artificiels</strong> (aimants permanents, électroaimants).</p>
+  <main>
+    <div class="snail-card">
+      <img id="snail-img" src="snail.png" alt="Escargot Turbo" style="cursor: pointer;">
+      <h2>Le mollusque le plus rapide de la nationale</h2>
+      <p>Vitesse de pointe : 0,003 km/h… en marche arrière. 🥵</p>
+      <p>Chance de te dépasser sur l’autoroute : 100% dans son cœur. ✅</p>
+      <button id="rigolotron-btn" class="rigolotron-btn">▶️ Lancer le son rigolo</button>
+    </div>
 
-          <h3>Types d'aimants</h3>
-          <ul>
-            <li><strong>Aimants permanents</strong> : aimants en ferrite, néodyme (très puissants), alnico.</li>
-            <li><strong>Électroaimants</strong> : créés par un courant électrique autour d'une bobine.</li>
-            <li><strong>Aimants temporaires</strong> : matériaux qui deviennent magnétiques sous l'effet d'un champ externe.</li>
-          </ul>
+    <section class="meme-texts">
+      <h2>Vérités indiscutables :</h2>
+      <ul>
+        <li>Mode nitro : quand ça clignote, tu ne vois plus rien.</li>
+        <li>Coquille aéro : homologuée F1 (par sa maman).</li>
+        <li>Turbo maison : propulsé au jus de salade.</li>
+        <li>Philosophie : « La vitesse, c’est dans la tête. »</li>
+      </ul>
+    </section>
+  </main>
 
-          <h3>Usages courants</h3>
-          <ul>
-            <li>Électroménager (moteurs, haut-parleurs), stockage (disques), appareils médicaux, industries, jouets.</li>
-            <li>Applications scientifiques : IRM en médecine, accélérateurs de particules.</li>
-          </ul>
-
-          <h3>Expérience rapide (sécurité)</h3>
-          <div class="experiment">
-            <ol>
-              <li>Matériel : quelques trombones, un aimant, une lime ou du papier de verre (optionnel), une feuille de papier.</li>
-              <li>Collez des trombones à l'aimant et observez : combien en accrochez-vous ?</li>
-              <li>Essayez de limer doucement un trombone (optionnel) pour créer des copeaux et montrez comment l'aimant attire les petits morceaux.</li>
-              <li>Attention : les aimants puissants (néodyme) peuvent pincer la peau et endommager les appareils électroniques (téléphones, cartes bancaires). Gardez-les éloignés des appareils sensibles.</li>
-            </ol>
-          </div>
-
-          <h3>Faits intéressants</h3>
-          <ul>
-            <li>La Terre se comporte comme un énorme aimant : elle a des pôles magnétiques qui bougent lentement avec le temps.</li>
-            <li>Les aimants en néodyme sont parmi les plus puissants disponibles dans le commerce.</li>
-          </ul>
-
-        </div>
-
-        <div class="card" style="margin-top:14px">
-          <h2>Mini-simulation interactive</h2>
-          <p class="small">Utilisez les contrôles pour changer la <span class="tag">force</span> et la <span class="tag">distance</span>. Voyez comment la force magnétique attire l'objet en fer.</p>
-
-          <div class="sim" id="sim">
-            <svg class="field-lines" id="field" width="100%" height="100%" viewBox="0 0 1000 320" preserveAspectRatio="none" aria-hidden>
-              <!-- lines will be drawn by JS -->
-            </svg>
-
-            <div class="magnet" id="magnet" role="img" aria-label="aimant">
-              <div class="label">N &nbsp;⇄&nbsp; S</div>
-            </div>
-
-            <div class="iron" id="iron" title="objet ferreux">⚙</div>
-
-          </div>
-
-          <div class="controls">
-            <label class="small">Force</label>
-            <input id="strength" type="range" min="1" max="10" value="5" />
-            <label class="small">Distance</label>
-            <input id="distance" type="range" min="20" max="520" value="260" />
-            <button id="resetBtn" class="btn" style="margin-left:6px">Reset</button>
-          </div>
-
-          <p class="small" style="margin-top:10px">Astuce : déplacez la barre <strong>Distance</strong> pour rapprocher ou éloigner l'aimant de l'objet. La simulation calcule une force approximative (loi simplifiée).</p>
-        </div>
-
-      </section>
-
-      <aside>
-        <div class="card">
-          <h2>Fiche rapide</h2>
-          <p><strong>Propriétés :</strong></p>
-          <ul>
-            <li>Pôles Nord/Sud</li>
-            <li>Attire le fer, le nickel, le cobalt</li>
-            <li>Les pôles opposés s'attirent, les mêmes se repoussent</li>
-          </ul>
-          <h3>Applications pédagogiques</h3>
-          <ul>
-            <li>Expériences de champ magnétique avec limaille de fer</li>
-            <li>Construction d'un électroaimant</li>
-            <li>Fabrication d'une boussole simple</li>
-          </ul>
-        </div>
-
-        <div class="card" style="margin-top:14px">
-          <h2>Ressources & idées</h2>
-          <ol>
-            <li>Créer une boussole : aimanter une aiguille et la poser sur un bouchon flottant.</li>
-            <li>Comparer aimants : quels objets attirent lesquels ?</li>
-            <li>Construire un électroaimant simple avec une pile, du fil et un clou.</li>
-          </ol>
-          <p class="small">Souhaitez-vous une version imprimable ou une présentation PPT ? Dites-le moi.</p>
-        </div>
-
-      </aside>
-    </main>
-
-    <footer>
-      <div class="small">Conçu pour l'apprentissage — modifiez librement ce fichier. Si vous voulez une traduction anglaise, un style plus scolaire, ou un quiz interactif, je peux l'ajouter.</div>
-    </footer>
+  <div class="floating-box" id="mini-snail" title="Mode NITRO">
+    <img src="mini-snail.jpg" alt="Mini Escargot">
   </div>
 
-  <script>
-    // Simulation JS (simple approximation)
-    const magnet = document.getElementById('magnet');
-    const iron = document.getElementById('iron');
-    const strengthInput = document.getElementById('strength');
-    const distanceInput = document.getElementById('distance');
-    const resetBtn = document.getElementById('resetBtn');
-    const fieldSvg = document.getElementById('field');
-    const sim = document.getElementById('sim');
+  <div class="overlay" id="overlay">
+    <div class="overlay-content">
+      <img src="turbo-snail.jpg" alt="Escargot Fullscreen" id="big-snail">
+      <img src="nitro.png" class="nitro-glow" alt="Effet Nitro">
+      <button id="close-btn">Freiner ✖</button>
+    </div>
+  </div>
 
-    function drawFieldLines(strength, magnetX) {
-      // clear
-      while (fieldSvg.firstChild) fieldSvg.removeChild(fieldSvg.firstChild);
-      const w = 1000, h = 320;
-      const cx = magnetX / sim.clientWidth * w;
-      // draw simple curved lines emanating from magnet center
-      for (let i = -5; i <= 5; i++){
-        const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-        const offset = i * 6;
-        const controlX = cx + 120 + Math.abs(i)*20 * (i<0?-1:1);
-        const d = `M ${cx-40} ${h/2 + offset} Q ${controlX} ${h/2+offset + (i*8)} ${w-20} ${h/2 + offset}`;
-        path.setAttribute('d', d);
-        path.setAttribute('fill','none');
-        path.setAttribute('stroke','rgba(6,182,212,0.06)');
-        path.setAttribute('stroke-width', Math.max(1, strength/3));
-        fieldSvg.appendChild(path);
-      }
-    }
+  <div id="karaoke" style="display:none;">💥 NITROOOOOOO ! 💥</div>
 
-    function updatePositions(){
-      // read controls
-      const strength = Number(strengthInput.value);
-      const distance = Number(distanceInput.value);
+  <div id="rigolo-player" class="rigolo-player" hidden>
+    <div class="rigolo-meta">
+      <span class="rigolo-title">Son rigolo</span>
+      <span id="rigolo-time" class="rigolo-time">0:00</span>
+    </div>
+    <div class="rigolo-controls">
+      <button id="rigolo-playpause" class="rigolo-ctl">⏸️</button>
+      <input id="rigolo-seek" type="range" min="0" max="100" value="0" step="1">
+      <input id="rigolo-vol" type="range" min="0" max="1" value="0.9" step="0.01">
+      <button id="rigolo-close" class="rigolo-ctl">✖</button>
+    </div>
+  </div>
 
-      // place magnet at left offset controlled by distance
-      // distanceInput represents pixel position of iron relative to left side
-      const simRect = sim.getBoundingClientRect();
-      const magX = Math.max(20, Math.min(simRect.width - 160, distance - 100));
-      magnet.style.left = magX + 'px';
+  <button id="mini-rigolo-btn" class="mini-rigolo-btn" title="Son rigolo 🎵">🎵</button>
 
-      // compute simplified magnetic attraction: F = k * strength / (dx^2) ; dx = horizontal distance
-      const ironRect = iron.getBoundingClientRect();
-      const magRect = magnet.getBoundingClientRect();
-      const dx = (iron.offsetLeft - (magnet.offsetLeft + magnet.offsetWidth/2));
-      const dy = (iron.offsetTop - (magnet.offsetTop + magnet.offsetHeight/2));
-      const r2 = Math.max(20, dx*dx + dy*dy);
-      const k = 5000; // scale constant for visible effect
-      const force = k * strength / r2; // pixels per tick influence
+  <footer>
+    <p>© 2025 — Escargot Turbo | Mème de compétition 🏁</p>
+  </footer>
 
-      // move iron towards magnet depending on force
-      const newLeft = iron.offsetLeft - dx * force;
-      const boundedLeft = Math.max(40, Math.min(sim.clientWidth - 40, newLeft));
-      iron.style.left = boundedLeft + 'px';
-
-      drawFieldLines(strength, magX + magnet.offsetWidth/2);
-
-      // visual cue: when very close, show 'captured' effect
-      const dist = Math.sqrt(r2);
-      if (dist < 60) {
-        iron.style.transform = 'translate(-50%,-50%) scale(1.2)';
-      } else {
-        iron.style.transform = 'translate(-50%,-50%) scale(1)';
-      }
-    }
-
-    // Initial placement
-    function init(){
-      // map distance input to position across sim width
-      const d = Number(distanceInput.value);
-      magnet.style.left = (Math.max(20, Math.min(sim.clientWidth - 160, d - 100))) + 'px';
-      iron.style.left = (Math.min(sim.clientWidth - 60, 260)) + 'px';
-      iron.style.top = (sim.clientHeight/2) + 'px';
-      updatePositions();
-    }
-
-    strengthInput.addEventListener('input', ()=> updatePositions());
-    distanceInput.addEventListener('input', ()=> updatePositions());
-    window.addEventListener('resize', ()=> init());
-    resetBtn.addEventListener('click', ()=>{
-      strengthInput.value = 5; distanceInput.value = 260; init();
-    });
-
-    // Start
-    init();
-
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
