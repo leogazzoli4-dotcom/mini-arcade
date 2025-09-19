@@ -18,6 +18,7 @@ const engine = new Audio('engine.mp3');
 const turbo = new Audio('turbo.m4a');
 const horn = new Audio('horn.wav');
 horn.volume = 0.5;
+
 const rigoloAudio = new Audio('son_rigolo.mp3');
 rigoloAudio.preload = 'metadata';
 rigoloAudio.volume = parseFloat(rigoloVol?.value || 0.9);
@@ -75,27 +76,22 @@ function popRigoloEmojis(n = 4) {
 
 // === Escargot principal ===
 snailImg?.addEventListener('click', () => {
-  engine.currentTime = 0;
-  engine.play().catch(()=>{});
-  turbo.currentTime = 0;
-  turbo.play().catch(()=>{});
+  [engine, turbo].forEach(s => { s.currentTime = 0; s.play().catch(()=>{}); });
   document.body.classList.add('race');
   snailImg.classList.add('turbo-wiggle');
-  turbo.onended = () => {
-    document.body.classList.remove('race');
-    snailImg.classList.remove('turbo-wiggle');
-  };
+});
+
+turbo.addEventListener('ended', () => {
+  document.body.classList.remove('race');
+  snailImg?.classList.remove('turbo-wiggle');
 });
 
 // === Overlay NITRO ===
 miniSnail?.addEventListener('click', () => {
-  overlay.style.display = 'flex';
-  karaoke.style.display = 'block';
+  overlay?.removeAttribute('hidden');
+  karaoke?.removeAttribute('hidden');
   if (!shellRainInterval) shellRainInterval = setInterval(spawnShell, 350);
-  horn.currentTime = 0;
-  horn.play().catch(()=>{});
-  turbo.currentTime = 0;
-  turbo.play().catch(()=>{});
+  [horn, turbo].forEach(s => { s.currentTime = 0; s.play().catch(()=>{}); });
 });
 
 closeBtn?.addEventListener('click', closeOverlay);
@@ -104,8 +100,8 @@ overlay?.addEventListener('click', e => {
 });
 
 function closeOverlay() {
-  overlay.style.display = 'none';
-  karaoke.style.display = 'none';
+  overlay?.setAttribute('hidden', '');
+  karaoke?.setAttribute('hidden', '');
   clearInterval(shellRainInterval);
   shellRainInterval = null;
   for (let i = 0; i < 36; i++) setTimeout(spawnLettuce, i * 45);

@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Escargot Turbo</title>
+  <meta name="description" content="Site mème : Escargot Turbo, le mollusque le plus rapide de la nationale 🐌">
   <link rel="stylesheet" href="style.css" />
+  <!-- Favicon corrigée -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐌</text></svg>">
 </head>
 <body>
@@ -15,11 +17,11 @@
 
   <main>
     <div class="snail-card">
-      <img id="snail-img" src="snail.png" alt="Escargot Turbo" style="cursor: pointer;">
+      <img id="snail-img" src="snail.png" alt="Escargot Turbo" class="clickable">
       <h2>Le mollusque le plus rapide de la nationale</h2>
       <p>Vitesse de pointe : 0,003 km/h… en marche arrière. 🥵</p>
       <p>Chance de te dépasser sur l’autoroute : 100% dans son cœur. ✅</p>
-      <button id="rigolotron-btn" class="rigolotron-btn">▶️ Lancer le son rigolo</button>
+      <button id="rigolotron-btn" class="rigolotron-btn" aria-label="Lancer le son rigolo">▶️ Lancer le son rigolo</button>
     </div>
 
     <section class="meme-texts">
@@ -45,7 +47,7 @@
     </div>
   </div>
 
-  <div id="karaoke" style="display:none;">💥 NITROOOOOOO ! 💥</div>
+  <p id="karaoke" hidden>💥 NITROOOOOOO ! 💥</p>
 
   <div id="rigolo-player" class="rigolo-player" hidden>
     <div class="rigolo-meta">
@@ -53,14 +55,14 @@
       <span id="rigolo-time" class="rigolo-time">0:00</span>
     </div>
     <div class="rigolo-controls">
-      <button id="rigolo-playpause" class="rigolo-ctl">⏸️</button>
+      <button id="rigolo-playpause" class="rigolo-ctl" aria-label="Mettre en pause">⏸️</button>
       <input id="rigolo-seek" type="range" min="0" max="100" value="0" step="1">
       <input id="rigolo-vol" type="range" min="0" max="1" value="0.9" step="0.01">
-      <button id="rigolo-close" class="rigolo-ctl">✖</button>
+      <button id="rigolo-close" class="rigolo-ctl" aria-label="Fermer le lecteur">✖</button>
     </div>
   </div>
 
-  <button id="mini-rigolo-btn" class="mini-rigolo-btn" title="Son rigolo 🎵">🎵</button>
+  <button id="mini-rigolo-btn" class="mini-rigolo-btn" title="Son rigolo 🎵" aria-label="Ouvrir le lecteur audio rigolo">🎵</button>
 
   <footer>
     <p>© 2025 — Escargot Turbo | Mème de compétition 🏁</p>

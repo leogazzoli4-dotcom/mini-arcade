@@ -1,5 +1,5 @@
 body {
-  font-family: 'Comic Sans MS', cursive, sans-serif;
+  font-family: 'Comic Neue', 'Comic Sans MS', cursive, sans-serif;
   margin: 0;
   padding: 0;
   background: linear-gradient(135deg, #0b0f19, #112240);
@@ -7,11 +7,15 @@ body {
   text-align: center;
   transition: background 0.3s;
 }
+
+/* === Header === */
 header {
   padding: 2rem;
   background: rgba(10, 10, 30, 0.7);
   border-bottom: 3px solid #00ffb7;
 }
+
+/* === Carte escargot === */
 .snail-card {
   background: rgba(255, 255, 255, 0.06);
   border: 2px solid #00ffc6;
@@ -26,6 +30,8 @@ header {
   border-radius: 15px;
   border: 3px solid #00ffc6;
 }
+
+/* === Textes mèmes === */
 .meme-texts {
   margin: 2rem auto;
   padding: 1rem;
@@ -41,6 +47,8 @@ ul li {
   margin: 0.6rem 0;
   font-size: 1.15rem;
 }
+
+/* === Bouton flottant escargot === */
 .floating-box {
   position: fixed;
   bottom: 20px;
@@ -62,6 +70,8 @@ ul li {
   max-height: 100%;
   border-radius: 8px;
 }
+
+/* === Overlay NITRO === */
 .overlay {
   position: fixed;
   inset: 0;
@@ -70,6 +80,9 @@ ul li {
   align-items: center;
   justify-content: center;
   z-index: 2000;
+}
+.overlay-content {
+  position: relative; /* ✅ corrige la position du bouton close */
 }
 .overlay-content img#big-snail {
   max-width: 80%;
@@ -105,6 +118,8 @@ ul li {
   font-size: 14px;
   box-shadow: 0 6px 14px rgba(0,0,0,0.35);
 }
+
+/* === Karaoke === */
 #karaoke {
   position: fixed;
   bottom: 100px;
@@ -113,7 +128,7 @@ ul li {
   font-size: 2.6rem;
   color: #fffb00;
   font-weight: bold;
-  text-shadow: 2px 2px 5px #ff296b;
+  text-shadow: 2px 2px 5px rgba(255,41,107,0.8); /* ✅ plus lisible */
   animation: chant 0.9s infinite;
   z-index: 2100;
 }
@@ -122,6 +137,8 @@ ul li {
   50% { transform: scale(1.25); opacity: 0.7; }
   100% { transform: scale(1); opacity: 1; }
 }
+
+/* === Effet course === */
 body.race {
   animation: street-rave 0.5s infinite;
 }
@@ -142,20 +159,31 @@ body.race {
   100% { transform: rotate(0deg) translateX(0); }
 }
 
-/* Bouton rigolotron principal */
-.rigolotron-btn {
-  margin-top: 1rem;
-  padding: 10px 16px;
-  background: #00ffb7;
-  color: #0b0f19;
+/* === Boutons === */
+.rigolotron-btn, .rigolo-ctl {
   border: none;
   border-radius: 10px;
   font-weight: bold;
   cursor: pointer;
   box-shadow: 0 6px 14px rgba(0,0,0,0.35);
+  transition: background 0.2s ease;
+}
+.rigolotron-btn {
+  margin-top: 1rem;
+  padding: 10px 16px;
+  background: #00ffb7;
+  color: #0b0f19;
 }
 .rigolotron-btn:hover {
   background: #00d7a0;
+}
+.rigolo-ctl {
+  background: #ff2e63;
+  color: white;
+  padding: 8px 12px;
+}
+.rigolo-ctl:hover {
+  background: #d81b4b;
 }
 
 /* Mini bouton rigolo 🎵 */
@@ -168,12 +196,11 @@ body.race {
   font-size: 1.4rem;
   background: #00ffb7;
   color: #0b0f19;
-  border: none;
   border-radius: 50%;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   cursor: pointer;
   z-index: 1500;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 .mini-rigolo-btn:hover {
   transform: scale(1.1);
@@ -196,7 +223,6 @@ body.race {
   backdrop-filter: blur(4px);
   color: #eaf6ff;
 }
-
 .rigolo-meta {
   display: flex;
   align-items: center;
@@ -206,23 +232,12 @@ body.race {
 }
 .rigolo-title { color: #00ffb7; }
 .rigolo-time { opacity: 0.85; }
-
 .rigolo-controls {
   display: grid;
   grid-template-columns: auto 1fr auto auto;
   gap: 10px;
   align-items: center;
 }
-.rigolo-ctl {
-  background: #ff2e63;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 8px 12px;
-  cursor: pointer;
-}
-.rigolo-ctl:hover { background: #d81b4b; }
-
 #rigolo-seek {
   width: 100%;
   accent-color: #00ffb7;
@@ -232,20 +247,19 @@ body.race {
   accent-color: #00ffb7;
 }
 
-/* Pluie de coquilles */
+/* === Animations visuelles === */
 .shell-fall {
   position: fixed;
   top: -60px;
   font-size: 2rem;
   animation: fall 5s linear forwards;
   z-index: 3000;
+  will-change: transform, opacity; /* ✅ optimisation */
 }
 @keyframes fall {
   0% { transform: translateY(-60px); opacity: 1; }
   100% { transform: translateY(100vh); opacity: 0; }
 }
-
-/* Confettis salade */
 .lettuce {
   position: fixed;
   width: 12px;
@@ -255,19 +269,19 @@ body.race {
   animation: lettuce-fall 3s linear forwards;
   z-index: 4000;
   box-shadow: 0 0 8px rgba(117,255,156,0.6);
+  will-change: transform, opacity; /* ✅ optimisation */
 }
 @keyframes lettuce-fall {
   0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
   100% { transform: translateY(100vh) rotate(600deg); opacity: 0; }
 }
-
-/* Pop d’émojis rigolos */
 .rigolo-pop {
   position: fixed;
   font-size: 2rem;
   pointer-events: none;
   animation: rigolo-pop 900ms ease-out forwards;
   z-index: 5000;
+  will-change: transform, opacity; /* ✅ optimisation */
 }
 @keyframes rigolo-pop {
   0%   { transform: translateY(0) scale(0.8); opacity: 0.9; }
@@ -275,7 +289,7 @@ body.race {
   100% { transform: translateY(-60px) scale(0.9) rotate(-10deg); opacity: 0; }
 }
 
-/* Pied de page */
+/* === Pied de page === */
 footer {
   margin-top: 3rem;
   padding: 1rem;
